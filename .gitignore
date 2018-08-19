@@ -1,0 +1,16 @@
+.vagrant
+.project
+.settings
+.idea
+.vs
+.vscode
+*.bak
+*.log
+*.sln
+*.suo
+*.csproj
+*.njsproj
+*.pyc
+playbook.retry
+!.gitkeep
+users.csv
