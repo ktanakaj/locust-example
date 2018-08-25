@@ -3,6 +3,7 @@
 """
 from locust import TaskSet, task
 import random
+import hashlib
 import common.utils as utils
 import common.auth as auth
 
@@ -31,9 +32,9 @@ class GamePage(TaskSet):
         utils.wait(self.locust.config.GAME_PLAY_WAIT_MIN,
                    self.locust.config.GAME_PLAY_WAIT_MAX)
 
-        # TODO: ハッシュを計算する
-        self.client.post("/api/games/end", json={"id": playlog["id"], "score": random.randint(
-            0, 10000), "cleared": random.choice([True, False]), "hash": "INVALID_HASH"})
+        playlog["score"] = random.randint(0, 10000)
+        playlog["cleared"] = random.choice([True, False])
+        self.client.post("/api/games/end", json={"id": playlog["id"], "score": playlog["score"], "cleared": playlog["cleared"], "hash": self.hash(playlog)})
 
         # 未クリアの場合、30%の確率（適当）で同じステージをリスタート
 
@@ -41,6 +42,18 @@ class GamePage(TaskSet):
         # self.client.get("/api/stages")
 
         # 10%の確率でゲーム終了
+
+    def hash(self, playlog):
+        h = hashlib.sha1()
+        h.update(self.locust.config.GAME_VALIDATION_SECRET.encode())
+        h.update(str(playlog["id"]).encode())
+        h.update(str(playlog["stageId"]).encode())
+        h.update(str(playlog["userId"]).encode() if playlog["userId"] is not None else b"0")
+        h.update(str(playlog["score"]).encode())
+        h.update(b"true" if playlog["cleared"] else b"false")
+        h.update(str(playlog["createdAt"]).encode())
+        h.update(str(playlog["updatedAt"]).encode())
+        return h.hexdigest()
 
     def stop(self):
         self.interrupt()

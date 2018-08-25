@@ -39,3 +39,6 @@ def get(host):
 # ゲームプレイ時間想定のウェイト
 GAME_PLAY_WAIT_MIN = 60000
 GAME_PLAY_WAIT_MAX = 600000
+
+# ゲームPlaylogバリデーション用の秘密鍵
+GAME_VALIDATION_SECRET = "yt7u9rtv095wo6w9;hit6yw9"
