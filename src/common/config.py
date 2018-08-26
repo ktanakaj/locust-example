@@ -11,15 +11,11 @@ class DefaultConfig():
 
     def __init__(self, host=None):
         super(DefaultConfig, self).__init__()
-        self.API_HOST = host
         self.USER_AGENT = "LocustSample"
-        self.RESPONSE_ENCODING = "UTF-8"
-        self.SSL_VERIFY = False
         self.MAX_RETRY = 3
         self.MAX_SLAVES = 4
         self.USER_CSV_PATH = os.path.join(
             os.path.dirname(__file__), "../../users.csv")
-        self.NEW_USER_RATE = 0.7
 
     def __getattr__(self, name):
         # 一応普通の定数もここから取れるようにしておく
