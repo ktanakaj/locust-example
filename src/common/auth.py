@@ -12,9 +12,11 @@ def check_auth(l):
     """
     認証状態を確認する
     """
+    l.user = None
     with l.client.get("/api/users/me", catch_response=True) as response:
         if response.ok:
             response.success()
+            l.user = response.json()
             return True
         if response.status_code == 401:
             response.success()
@@ -27,16 +29,21 @@ def create_user(l):
     """
     ユーザーを作成する。
     """
-    name = "test_" + utils.random_alphanumeric_string(6)
+    l.user = None
+    name = "testuser_" + utils.random_alphanumeric_string(6)
     response = l.client.post(
         "/api/users", json={"name": name, "password": "testpassword"})
-    return response.ok
+    if response.ok:
+        l.user = response.json()
+        return True
+    return False
 
 
 def login_by_csv(l):
     """
     CSVのユーザーでログインする。
     """
+    l.user = None
     user_csv_loader = UserCsvLoader(l.locust.config)
     user = user_csv_loader.next()
     if user is None:
@@ -44,7 +51,10 @@ def login_by_csv(l):
 
     response = l.client.post(
         "/api/authenticate", json={"name": user['name'], "password": user['password']})
-    return response.ok
+    if response.ok:
+        l.user = response.json()
+        return True
+    return False
 
 
 def logout(l):
@@ -52,7 +62,10 @@ def logout(l):
     ログアウトする
     """
     response = l.client.post("/api/authenticate/logout")
-    return response.ok
+    if response.ok:
+        l.user = None
+        return True
+    return False
 
 
 class UserCsvLoader:

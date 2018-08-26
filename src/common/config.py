@@ -40,5 +40,13 @@ def get(host):
 GAME_PLAY_WAIT_MIN = 60000
 GAME_PLAY_WAIT_MAX = 600000
 
+# ステージ情報編集想定のウェイト
+STAGE_EDIT_WAIT_MIN = 60000
+STAGE_EDIT_WAIT_MAX = 600000
+
+# ユーザー情報編集想定のウェイト
+USER_EDIT_WAIT_MIN = 30000
+USER_EDIT_WAIT_MAX = 60000
+
 # ゲームPlaylogバリデーション用の秘密鍵
 GAME_VALIDATION_SECRET = "yt7u9rtv095wo6w9;hit6yw9"
