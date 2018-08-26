@@ -13,11 +13,11 @@ from users import MyPage
 
 class GuestUserBehavior(TaskSet):
     def create_user(self):
-        if auth.create_user(self):
+        if auth.create_user(self.locust):
             self.interrupt()
 
     def login(self):
-        if auth.login_by_csv(self):
+        if auth.login_by_csv(self.locust):
             self.interrupt()
 
     tasks = {GamePage: 10, StagePage: 4, create_user: 1, login:1}
@@ -25,7 +25,7 @@ class GuestUserBehavior(TaskSet):
 
 class AuthenticatedUserBehavior(TaskSet):
     def logout(self):
-        if auth.logout(self):
+        if auth.logout(self.locust):
             self.interrupt()
 
     tasks = {GamePage: 10, StagePage: 4, BlockPage: 1, MyPage: 2, logout: 1}
@@ -40,7 +40,7 @@ class UserBehavior(TaskSet):
         # 認証状態が変わった場合は、タスクセットを終了して再実行させる。
         # （認証状態には管理者もあるが、管理者の大量アクセスは想定しないのでテスト省略）
         self.client.get("/index.html")
-        if auth.check_auth(self):
+        if auth.check_auth(self.locust):
             self.schedule_task(AuthenticatedUserBehavior, first=True)
         else:
             self.schedule_task(GuestUserBehavior, first=True)

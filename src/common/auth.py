@@ -44,7 +44,7 @@ def login_by_csv(l):
     CSVのユーザーでログインする。
     """
     l.user = None
-    user_csv_loader = UserCsvLoader(l.locust.config)
+    user_csv_loader = UserCsvLoader(l.config)
     user = user_csv_loader.next()
     if user is None:
         return False
