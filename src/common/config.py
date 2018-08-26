@@ -12,7 +12,7 @@ class DefaultConfig():
     def __init__(self, host=None):
         super(DefaultConfig, self).__init__()
         self.USER_AGENT = "LocustSample"
-        self.MAX_RETRY = 3
+        self.MAX_RETRY = 2
         self.MAX_SLAVES = 4
         self.USER_CSV_PATH = os.path.join(
             os.path.dirname(__file__), "../../users.csv")

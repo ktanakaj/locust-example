@@ -4,6 +4,8 @@ Locustスクリプトのエントリーポイント
 
 import random
 from locust import HttpLocust, TaskSet
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 from common import config, auth
 from games import GamePage
 from stages import StagePage
@@ -58,10 +60,16 @@ class AppUser(HttpLocust):
 
     def __init__(self, *args, **kwargs):
         super(AppUser, self).__init__(*args, **kwargs)
+
         # 環境別の設定ファイルを取得
         self.config = config.get(self.host)
-        # クライアントにデフォルトの設定を追加
+
+        # クライアントにデフォルトの設定を追加、リトライも指定
         self.client.headers['User-Agent'] = self.config.USER_AGENT
         self.client.headers['Accept'] = "application/json, text/html, text/plain"
+        retries = Retry(total=self.config.MAX_RETRY, backoff_factor=1, status_forcelist=[ 500, 502, 503, 504 ])
+        self.client.mount('https://', HTTPAdapter(max_retries=retries))
+        self.client.mount('http://', HTTPAdapter(max_retries=retries))
+
         # ログイン情報をプロパティとして保持
         self.user = None
