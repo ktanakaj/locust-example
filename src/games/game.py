@@ -13,10 +13,9 @@ class GamePage(TaskSet):
     ゲーム画面のタスクセット。
     """
 
-    @task(50)
+    @task(5)
     def play(self):
-        # 取得したステージからランダムに選択してゲーム開始、
-        # 一定時間後ゲーム終了
+        # 取得したステージからランダムに選択してゲームプレイ
         response = self.client.get("/api/stages")
         if not response.ok:
             return
@@ -24,8 +23,20 @@ class GamePage(TaskSet):
         stages = response.json()
         stage = random.choice(stages)
 
+        self.play_stage(stage["id"])
+
+    @task(3)
+    def retry(self):
+        # クリアできなかったステージに再挑戦する
+        if self.last_stage_id is None:
+            return
+
+        self.play_stage(self.last_stage_id)
+
+    def play_stage(self, stage_id):
+        # ゲーム開始後、一定時間でゲーム終了
         response = self.client.post("/api/games/start", json={
-            "stageId": stage["id"]
+            "stageId": stage_id
         })
         if not response.ok:
             return
@@ -43,12 +54,8 @@ class GamePage(TaskSet):
             "hash": self.hash(playlog)
         })
 
-        # 未クリアの場合、30%の確率（適当）で同じステージをリスタート
-
-        # それ以外は60%の確率で別のステージをプレイ
-        # self.client.get("/api/stages")
-
-        # 10%の確率でゲーム終了
+        # 未クリアの場合、リスタート用に最後にプレイしたステージを記録
+        self.last_stage_id = stage_id if not playlog["cleared"] else None
 
     def hash(self, playlog):
         h = hashlib.sha1()
@@ -63,7 +70,7 @@ class GamePage(TaskSet):
         h.update(str(playlog["updatedAt"]).encode())
         return h.hexdigest()
 
-    @task(10)
+    @task(1)
     def stop(self):
         self.interrupt()
 
@@ -71,3 +78,5 @@ class GamePage(TaskSet):
         # 初期情報読み込み
         self.client.get("/api/blocks")
         auth.check_auth(self)
+        # プロパティ初期化
+        self.last_stage_id = None
