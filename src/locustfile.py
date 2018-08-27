@@ -22,7 +22,7 @@ class GuestUserBehavior(TaskSet):
         if auth.login_by_csv(self.locust):
             self.interrupt()
 
-    tasks = {GamePage: 10, StagePage: 4, create_user: 1, login:1}
+    tasks = {GamePage: 10, StagePage: 4, create_user: 1, login: 1}
 
 
 class AuthenticatedUserBehavior(TaskSet):
@@ -67,7 +67,8 @@ class AppUser(HttpLocust):
         # クライアントにデフォルトの設定を追加、リトライも指定
         self.client.headers['User-Agent'] = self.config.USER_AGENT
         self.client.headers['Accept'] = "application/json, text/html, text/plain"
-        retries = Retry(total=self.config.MAX_RETRY, backoff_factor=1, status_forcelist=[ 500, 502, 503, 504 ])
+        retries = Retry(total=self.config.MAX_RETRY,
+                        backoff_factor=1, status_forcelist=[500, 502, 503, 504])
         self.client.mount('https://', HTTPAdapter(max_retries=retries))
         self.client.mount('http://', HTTPAdapter(max_retries=retries))
 

@@ -13,6 +13,7 @@ class GamePage(TaskSet):
     ゲーム画面のタスクセット。
     """
 
+    @task(50)
     def play(self):
         # 取得したステージからランダムに選択してゲーム開始、
         # 一定時間後ゲーム終了
@@ -23,8 +24,9 @@ class GamePage(TaskSet):
         stages = response.json()
         stage = random.choice(stages)
 
-        response = self.client.post(
-            "/api/games/start", json={"stageId": stage["id"]})
+        response = self.client.post("/api/games/start", json={
+            "stageId": stage["id"]
+        })
         if not response.ok:
             return
 
@@ -34,7 +36,12 @@ class GamePage(TaskSet):
 
         playlog["score"] = random.randint(0, 10000)
         playlog["cleared"] = random.choice([True, False])
-        self.client.post("/api/games/end", json={"id": playlog["id"], "score": playlog["score"], "cleared": playlog["cleared"], "hash": self.hash(playlog)})
+        self.client.post("/api/games/end", json={
+            "id": playlog["id"],
+            "score": playlog["score"],
+            "cleared": playlog["cleared"],
+            "hash": self.hash(playlog)
+        })
 
         # 未クリアの場合、30%の確率（適当）で同じステージをリスタート
 
@@ -48,13 +55,15 @@ class GamePage(TaskSet):
         h.update(self.locust.config.GAME_VALIDATION_SECRET.encode())
         h.update(str(playlog["id"]).encode())
         h.update(str(playlog["stageId"]).encode())
-        h.update(str(playlog["userId"]).encode() if playlog["userId"] is not None else b"0")
+        h.update(str(playlog["userId"]).encode()
+                 if playlog["userId"] is not None else b"0")
         h.update(str(playlog["score"]).encode())
         h.update(b"true" if playlog["cleared"] else b"false")
         h.update(str(playlog["createdAt"]).encode())
         h.update(str(playlog["updatedAt"]).encode())
         return h.hexdigest()
 
+    @task(10)
     def stop(self):
         self.interrupt()
 
@@ -62,5 +71,3 @@ class GamePage(TaskSet):
         # 初期情報読み込み
         self.client.get("/api/blocks")
         auth.check_auth(self)
-
-    tasks = {play: 50, stop: 10}
