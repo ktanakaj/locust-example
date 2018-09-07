@@ -41,7 +41,6 @@ class UserBehavior(TaskSet):
         # 認証済と未認証で想定される操作が異なるため、ここで大きく振り分ける。
         # 認証状態が変わった場合は、タスクセットを終了して再実行させる。
         # （認証状態には管理者もあるが、管理者の大量アクセスは想定しないのでテスト省略）
-        self.client.get("/index.html")
         if auth.check_auth(self.locust):
             self.schedule_task(AuthenticatedUserBehavior, first=True)
         else:
