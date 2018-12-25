@@ -4,12 +4,12 @@
 起動中のサーバーに対してリクエストを投げます。このサンプルでは、[breakout-mk](https://github.com/ktanakaj/breakout-mk)のAPIをターゲットとしています。
 
 ## 実行環境
-* Ubuntu 16.04 LTS
-* Python 3.5
-* Locust 0.8.1
+* Ubuntu 18.04 LTS
+* Python 3.6
+* Locust 0.9.0
 
 ### 開発環境
-* Vagrant 2.1.x - 仮想環境管理
+* Vagrant 2.2.x - 仮想環境管理
     * VirtualBox 5.2.x - 仮想環境
     * vagrant-vbguest - Vagrantプラグイン
 
