@@ -36,4 +36,4 @@
 それ以外のディレクトリには、主に `TaskSet` の形で個別の画面ごとのテストが実装されています。  
 
 ## ライセンス
-[MIT](https://github.com/ktanakaj/locust-sample/blob/master/LICENSE)
+[MIT](https://github.com/ktanakaj/locust-example/blob/master/LICENSE)
