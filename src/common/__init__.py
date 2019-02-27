@@ -4,3 +4,5 @@ HTTPクライアントや認証、環境設定などの共通処理用ディレ�
 from . import config
 from . import auth
 from . import utils
+from . import locust
+from .locust import AppLocust

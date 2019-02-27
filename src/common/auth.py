@@ -10,7 +10,7 @@ from . import utils
 
 def check_auth(l):
     """
-    認証状態を確認する
+    認証状態を確認する。
     """
     l.user = None
     with l.client.get("/api/users/me", catch_response=True) as response:
@@ -59,7 +59,7 @@ def login_by_csv(l):
 
 def logout(l):
     """
-    ログアウトする
+    ログアウトする。
     """
     response = l.client.post("/api/authenticate/logout")
     if response.ok:
