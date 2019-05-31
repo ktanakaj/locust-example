@@ -4,14 +4,15 @@
 起動中のサーバーに対してリクエストを投げます。このサンプルでは、[breakout-mk](https://github.com/ktanakaj/breakout-mk)のAPIをターゲットとしています。
 
 ## 実行環境
-* Ubuntu 18.04 LTS
+* CentOS 7
 * Python 3.6
 * Locust 0.9.0
 
 ### 開発環境
-* Vagrant 2.2.x - 仮想環境管理
-    * VirtualBox 5.2.x - 仮想環境
-    * vagrant-vbguest - Vagrantプラグイン
+* Vagrant 2.2.4 - 仮想環境管理
+    * Hyper-V (Windows 10 Pro) - 仮想環境
+
+※ [VirtualBox](https://www.virtualbox.org/) + [vagrant-vbguest](https://github.com/dotless-de/vagrant-vbguest)プラグイン等でも動作します。
 
 ## インストール方法
 リポジトリ内のファイルを任意の場所に配置してください。
@@ -24,7 +25,7 @@
 サンプルのVM環境は `/vagrant` 移動後に `./run_local.sh` でLocust起動可能です。  
 （例、`./run_local.sh http://172.28.128.3`）
 
-起動後はブラウザで `http://localhost:8089/` 等でWebインタフェースにアクセスしてください。
+起動後はブラウザで `http://[DHCPで振られたIP]:8089/` 等でWebインタフェースにアクセスしてください。
 
 ログは `/var/log/locust/` に出力されます。
 

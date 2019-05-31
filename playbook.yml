@@ -16,14 +16,10 @@
           shell: timedatectl set-timezone {{ timezone }}
           when: timedatectl_timezone.stdout == ""
       - block:
-        - name: Upgrade all packages
-          apt:
-            upgrade: yes
-            update_cache: yes
-        - name: Install the package "python3-pip"
-          apt:
-            name: python3-pip
-            state: present
+        - name: Install the latest version of Python3.6
+          yum: name=python36 state=latest
+        - name: Install the latest version of PIP
+          yum: name=python36-pip state=latest
         - name: Install the package "locust"
           pip:
             name: locust
